@@ -1,0 +1,39 @@
+import math
+
+# Constants
+distance_from_radar = 80000  # meters
+search_sector_angle = 120  # degrees
+speed = 210  # m/s
+time_interval = 0.1  # seconds
+total_time = 265  # seconds
+
+# Calculate angular velocity (radians per second)
+angular_velocity = math.radians(search_sector_angle) / total_time
+
+# Initialize arrays to store X, Y, and Z coordinates
+x_coordinates = []
+y_coordinates = []
+z_coordinates = []
+
+# Calculate coordinates for each time interval
+for t in range(int(total_time / time_interval) + 1):
+    time = t * time_interval
+
+    # Calculate X, Y, and Z coordinates
+    x = distance_from_radar * math.cos(angular_velocity * time)
+    y = distance_from_radar * math.sin(angular_velocity * time)
+    z = 0  # Z-coordinate remains zero as the target is in the same plane as the radar
+
+    x_coordinates.append(x)
+    y_coordinates.append(y)
+    z_coordinates.append(z)
+
+# Create a list of tuples (time, X, Y, Z)
+trajectory_data = [(t, x, y, z) for t, x, y, z in zip(range(int(total_time / time_interval) + 1), x_coordinates, y_coordinates, z_coordinates)]
+
+# Write the data to a '.trj' file
+with open('trajectory.trj', 'w') as file:
+    for data_point in trajectory_data:
+        file.write(f"{data_point[0]:.1f} {data_point[1]:.2f} {data_point[2]:.2f} {data_point[3]:.2f}\n")
+
+print("Trajectory data saved to 'trajectory.trj'")
